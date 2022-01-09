@@ -3,27 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use Illuminate\Http\Request;
+use App\Http\Requests\BookRequest;
 
 class BookController extends Controller
 {
-    public function store()
+    public function store(BookRequest $request)
     {
-        $data = $this->validate(\request(), [
-            'title' => 'required',
-            'author' => 'required'
-        ]);
-
-        Book::create($data);
+        Book::create($request->validated());
     }
 
-    public function update(Book $book)
+    public function update(Book $book, BookRequest $request)
     {
-        $data = $this->validate(\request(), [
-            'title' => 'required',
-            'author' => 'required'
-        ]);
-
-        $book->update($data);
+        $book->update($request->validated());
     }
 }
