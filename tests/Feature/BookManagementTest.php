@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class BookReservationTest extends TestCase
+class BookManagementTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -20,9 +20,8 @@ class BookReservationTest extends TestCase
             'author' => 'New Author'
         ]);
 
-        $response->assertOk();
-
         $this->assertCount(1, Book::all());
+        $response->assertRedirect(Book::first()->path());
     }
 
     /** @test */
@@ -61,15 +60,17 @@ class BookReservationTest extends TestCase
         $new_title = 'Updated Title';
         $new_author = 'Updated Author';
 
-        $this->patch('/books/' . $book->id, [
+        $response = $this->patch('/books/' . $book->id, [
             'title' => $new_title,
             'author' => $new_author
         ]);
 
-        $updated_book = Book::first();
+        $book = $book->fresh();
 
-        $this->assertEquals($new_title, $updated_book->title);
-        $this->assertEquals($new_author, $updated_book->author);
+        $this->assertEquals($new_title, $book->title);
+        $this->assertEquals($new_author, $book->author);
+
+        $response->assertRedirect($book->path());
     }
 
     /** @test */
@@ -86,8 +87,9 @@ class BookReservationTest extends TestCase
 
         $book = Book::first();
 
-        $this->delete('/books/' . $book->id);
+        $response = $this->delete('/books/' . $book->id);
 
         $this->assertCount(0, Book::all());
+        $response->assertRedirect('/books');
     }
 }
