@@ -16,4 +16,9 @@ class BookController extends Controller
     {
         $book->update($request->validated());
     }
+
+    public function destroy(Book $book)
+    {
+        $book->delete();
+    }
 }
