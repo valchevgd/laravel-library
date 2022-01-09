@@ -9,16 +9,22 @@ class BookController extends Controller
 {
     public function store(BookRequest $request)
     {
-        Book::create($request->validated());
+        $book = Book::create($request->validated());
+
+        return redirect($book->path());
     }
 
     public function update(Book $book, BookRequest $request)
     {
         $book->update($request->validated());
+
+        return redirect($book->path());
     }
 
     public function destroy(Book $book)
     {
         $book->delete();
+
+        return redirect('/books');
     }
 }
